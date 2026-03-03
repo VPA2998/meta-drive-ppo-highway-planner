@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints
+
+# RL Models (large binary files)
+models/*.zip
+!models/.gitkeep
+
+# Outputs (keep demo, ignore raw)
+outputs/*.gif
+outputs/*.mp4
+outputs/*.avi
+!outputs/demo/.gitkeep
+
+# Results (logs can get large)
+results/*.csv
+results/*.json
+results/*.pkl
+!results/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
