@@ -105,9 +105,9 @@ Open [notebooks/01_ppo_metadrive_training.ipynb](notebooks/01_ppo_metadrive_trai
 
 ### 🎬 Demo
 
-(Coming soon: Add GIF after running notebook Section 5)
+![MetaDrive PPO Demo](results/outputs/demo/seed1012_density0.2.gif)
 
-*PPO agent navigating highway with varying traffic densities (0.05, 0.1, 0.2). Policy generalizes to unseen seeds.*
+*PPO agent navigating highway with traffic density 0.1 (unseen seed 1010). The policy handles lane keeping, obstacle avoidance, and smooth steering purely from LiDAR + detector inputs.*
 
 ### 📊 Training Results
 
