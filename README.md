@@ -57,18 +57,27 @@ This project implements **end-to-end autonomous driving** using Deep Reinforceme
 ```
 meta-drive-ppo-highway-planner/
 ├── notebooks/
-│ └── 01_ppo_metadrive_training.ipynb # Full pipeline
-├── src/ # Modular packages (future)
-├── models/ # Saved PPO policies (.zip)
-├── outputs/ # GIFs, videos
-│ └── demo/ # Demo assets
-├── results/ # Training logs, CSVs
-├── docs/ # Architecture docs
+│ └── 01_ppo_metadrive_training.ipynb # Full pipeline (training → eval → demo)
+├── src/ # Modular Python packages
+│ ├── init.py
+│ ├── env_config.py # Environment configurations (train/eval/stress)
+│ ├── train.py # PPO initialization and training
+│ ├── evaluate.py # Unseen scenario evaluation + benchmarks
+│ └── visualize.py # GIF generation + Gradio demo
+├── models/ # Saved PPO policies
+│ └── ppo_metadrive_safe.zip
+├── outputs/ # Generated GIFs
+│ └── demo/ # 9 scenario GIFs (3 seeds × 3 densities)
+├── docs/ # Architecture documentation
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
-
+**Key Modules:**
+- `env_config.py`: Centralized configuration for training, evaluation, and stress tests
+- `train.py`: PPO model creation with customizable hyperparameters
+- `evaluate.py`: Automated benchmarking against baselines
+- `visualize.py`: Batch GIF generation for scenario visualization
 ---
 
 ## 🚀 Quick Start
@@ -105,12 +114,43 @@ Open [notebooks/01_ppo_metadrive_training.ipynb](notebooks/01_ppo_metadrive_trai
 
 ### 🎬 Demo
 
-![MetaDrive PPO Demo](results/output/demo/seed1012_density0.1.gif)
-=======
-![MetaDrive PPO Demo](results/output/demo/seed1012_density0.2.gif)
+![MetaDrive PPO Demo](outputs/demo/seed1010_density0.1.gif)
 
+*Figure: Trained PPO agent navigating highway traffic (density=0.1, unseen seed 1010). The policy demonstrates:*
+- *Smooth lane keeping using LiDAR + lane line detectors*
+- *Collision avoidance with surrounding vehicles*
+- *Generalization to unseen scenarios (trained on seeds 0-50, tested on 1000+)*
 
-*PPO agent navigating highway with traffic density 0.1 (unseen seed 1010). The policy handles lane keeping, obstacle avoidance, and smooth steering purely from LiDAR + detector inputs.*
+### 📊 Performance Metrics
+
+| Metric | Value |
+|--------|-------|
+| **Training Episodes** | 50 scenarios |
+| **Total Timesteps** | 100,000 |
+| **Mean Reward (Train)** | ~100 |
+| **Mean Reward (Eval, unseen)** | 87.2 ± 30.8 |
+| **Generalization Gap** | <13% |
+| **vs Random Agent** | ~700% better |
+
+### 🎯 Scenario Coverage
+
+We generated **9 demo GIFs** covering:
+- **3 unseen seeds**: 1008, 1010, 1012
+- **3 traffic densities**: 0.05 (light), 0.1 (medium), 0.2 (heavy)
+
+All GIFs are available in `outputs/demo/`.
+
+## 🏆 Benchmark Comparison
+
+We compared our trained PPO agent against a random action baseline on 5 unseen episodes:
+
+| Agent | Mean Reward | Std Dev | Success Rate |
+|-------|-------------|---------|--------------|
+| **PPO (Ours)** | **87.2** | 30.8 | ~80% |
+| Random Agent | 12.5 | 5.2 | ~5% |
+
+**Result:** Our PPO agent achieves **~7x better performance** than random actions, demonstrating effective learning of highway driving behaviors.
+
 
 ### 📊 Training Results
 
