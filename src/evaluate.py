@@ -7,9 +7,19 @@ Tests trained policies on unseen scenarios and stress tests.
 import numpy as np
 from metadrive import MetaDriveEnv
 from stable_baselines3 import PPO
-from metadrive.engine.engineutils import close_engine
 
-from .env_config import get_env_config
+# Fix: Import close_engine safely
+try:
+    from metadrive.engine.engineutils import close_engine
+except ImportError:
+    try:
+        from metadrive.utils import close_engine
+    except ImportError:
+        def close_engine():
+            print("⚠️ close_engine not found, skipping...")
+            pass
+
+from env_config import get_env_config
 
 def evaluate_policy(model: PPO, config_type: str = "eval", episodes: int = 5) -> tuple:
     """

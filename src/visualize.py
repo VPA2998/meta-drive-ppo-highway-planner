@@ -10,9 +10,19 @@ import numpy as np
 import gradio as gr
 from metadrive import MetaDriveEnv
 from stable_baselines3 import PPO
-from metadrive.engine.engineutils import close_engine
 
-from .env_config import get_env_config
+# Fix: Import close_engine safely
+try:
+    from metadrive.engine.engineutils import close_engine
+except ImportError:
+    try:
+        from metadrive.utils import close_engine
+    except ImportError:
+        def close_engine():
+            print("⚠️ close_engine not found, skipping...")
+            pass
+
+from env_config import get_env_config
 
 def generate_gif(model: PPO, seed: int, traffic_density: float, 
                  filename: str, num_steps: int = 600) -> str:

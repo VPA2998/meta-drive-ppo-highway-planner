@@ -8,11 +8,23 @@ import torch
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from metadrive import MetaDriveEnv
-from metadrive.engine.engineutils import close_engine
 
-from .env_config import get_env_config
+# Fix: Import close_engine safely
+try:
+    from metadrive.engine.engineutils import close_engine
+except ImportError:
+    # Fallback for different MetaDrive versions
+    try:
+        from metadrive.utils import close_engine
+    except ImportError:
+        # Last resort: define a dummy function
+        def close_engine():
+            print("⚠️ close_engine not found, skipping...")
+            pass
 
-def create_ppo_model(env_config: dict, verbose: int = 1) -> PPO:
+from env_config import get_env_config
+
+def create_ppo_model(env_config: dict, verbose: int = 1) -> tuple:
     """
     Initialize PPO model with default hyperparameters.
     
@@ -21,7 +33,7 @@ def create_ppo_model(env_config: dict, verbose: int = 1) -> PPO:
         verbose: Logging verbosity
     
     Returns:
-        Trained PPO model
+        Tuple: (model, env)
     """
     # Close any existing engines
     close_engine()
